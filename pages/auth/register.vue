@@ -10,11 +10,8 @@ definePageMeta({
 //
 const loading = ref(false);
 
-//
-const formFields = reactive({
-  email: 'w@w.ww',
-  password: '111111',
-});
+// Для полей формы
+const { formFields } = storeToRefs(useAuthStore());
 
 // Валидация
 const rules = {
@@ -28,7 +25,7 @@ const rules = {
   },
 };
 
-const v$ = useVuelidate(rules, formFields);
+const v$ = useVuelidate(rules, formFields.value);
 
 // Отправка формы
 const loginHandler = async () => {
@@ -45,17 +42,19 @@ const loginHandler = async () => {
   try {
     const data = await $fetch('/api/auth/register', {
       method: 'POST',
-      body: formFields,
+      body: formFields.value,
     });
 
-    console.log(data);
-    successMsg('Вы зарегистрировались');
+    successMsg('Для подтверждения мы вам отправили код на вашу эл. почту', 4000);
 
     // Очищение полей
-    // formFields.email = formFields.password = '';
+    // formFields.value.email = formFields.value.password = '';
 
     // Сброс валидации
     // v$.value.$reset();
+
+    // Перенаправление на страницу подтверждения почты
+    await navigateTo('/auth/emailVerification');
   } catch (error: any) {
     for (const item of error.data.data) {
       errorMsg(item);

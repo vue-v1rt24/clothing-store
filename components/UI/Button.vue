@@ -10,10 +10,14 @@ const {
   width?: string;
   height?: string;
 }>();
+
+const emit = defineEmits<{
+  btnHandler: [];
+}>();
 </script>
 
 <template>
-  <button :type :disabled="loading" class="btn">
+  <button :type :disabled="loading" @click="emit('btnHandler')" class="btn">
     {{ title }}
   </button>
 </template>

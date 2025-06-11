@@ -1,7 +1,9 @@
 import prisma from '~/lib/prisma';
 import { hashPassword } from '~/server/utils/auth/bcrypt.utils';
 import { loginSchema, zShowError } from '~/server/utils/auth/validateUserInput.utils';
-import { TypeForm } from '~/server/types/auth.types';
+import { type TypeForm, UserEmailType } from '~/server/types/auth.types';
+import { sendEmailVerification } from '~/server/utils/auth/sendEmailVerification';
+import { generateOtpCode } from '~/server/utils/auth/generateOtpCode';
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody<TypeForm>(event);
@@ -35,17 +37,31 @@ export default defineEventHandler(async (event) => {
   // Кэшируем пароль
   const hashPwd = await hashPassword(password);
 
+  // Создаём код для подтверждения почты
+  const optCode = generateOtpCode();
+
   // Создаём пользователя
   const user = await prisma.user.create({
     data: {
       email,
       password: hashPwd,
+      isValidEmail: UserEmailType.InvalidEmail,
+      optCode,
     },
     omit: {
       password: true,
+      isValidEmail: true,
+      optCode: true,
     },
   });
 
+  // Отправка кода подтверждения почты пользователю
+  // await sendEmailVerification(email, optCode);
+
   //
-  return user;
+  return {
+    message: 'Пользователь создан',
+    redirect: true,
+    user,
+  };
 });
