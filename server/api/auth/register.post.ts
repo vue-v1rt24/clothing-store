@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
   // Отправка кода подтверждения почты пользователю
   // await sendEmailVerification(email, optCode);
 
-  //
+  // Возвращаем данные
   return {
     message: 'Пользователь создан',
     redirect: true,

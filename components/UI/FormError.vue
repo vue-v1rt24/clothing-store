@@ -16,4 +16,9 @@ defineProps<{
   </div>
 </template>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.error-msg {
+  font-size: 14px;
+  color: red;
+}
+</style>

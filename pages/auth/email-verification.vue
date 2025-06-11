@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import VOtpInput from 'vue3-otp-input';
+import { userMessageError } from '~/utils/user/userMessageError.utils';
 
 //
 const { formFields } = storeToRefs(useAuthStore());
@@ -31,11 +32,14 @@ const verifyEmail = async () => {
       },
     });
 
-    console.log(res);
     successMsg(res.message);
+
+    // Очищение хранилища
+    formFields.value.email = formFields.value.password = '';
+
     await navigateTo('/auth/login');
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    userMessageError(error.data.data);
   } finally {
     loading.value = false;
   }

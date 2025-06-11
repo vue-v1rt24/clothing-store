@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, helpers } from '@vuelidate/validators';
+import { userMessageError } from '~/utils/user/userMessageError.utils';
 
 //
 definePageMeta({
@@ -17,11 +18,11 @@ const { formFields } = storeToRefs(useAuthStore());
 const rules = {
   email: {
     required: helpers.withMessage('Поле обязательное для заполнения', required),
-    // email: helpers.withMessage('Неправильная почта', email),
+    email: helpers.withMessage('Неправильная почта', email),
   },
   password: {
     required: helpers.withMessage('Поле обязательное для заполнения', required),
-    // minLength: helpers.withMessage('Длина пароля не менее 6 символов', minLength(6)),
+    minLength: helpers.withMessage('Длина пароля не менее 6 символов', minLength(6)),
   },
 };
 
@@ -47,18 +48,16 @@ const loginHandler = async () => {
 
     successMsg('Для подтверждения мы вам отправили код на вашу эл. почту', 4000);
 
-    // Очищение полей
+    // Очищение хранилища
     // formFields.value.email = formFields.value.password = '';
 
     // Сброс валидации
-    // v$.value.$reset();
+    v$.value.$reset();
 
     // Перенаправление на страницу подтверждения почты
-    await navigateTo('/auth/emailVerification');
+    await navigateTo('/auth/email-verification');
   } catch (error: any) {
-    for (const item of error.data.data) {
-      errorMsg(item);
-    }
+    userMessageError(error.data.data);
   } finally {
     loading.value = false;
   }
