@@ -6,3 +6,24 @@
 body {
   font-family: sans-serif;
 }
+
+/*  */
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(transparent, #cdd8cb);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(transparent, #b7c1b6);
+}
+
+/*  */
+
+a {
+  text-decoration: none;
+}
