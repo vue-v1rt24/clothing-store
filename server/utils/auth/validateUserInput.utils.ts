@@ -5,6 +5,7 @@ import { TypeForm } from '~/server/types/auth.types';
 
 // Проверка
 export const loginSchema = z.object({
+  name: z.string().min(3, 'Длина имени не менее 3 символов'),
   email: z.email('Неправильная почта'),
   password: z.string().min(6, 'Длина пароля не менее 6 символов'),
 });

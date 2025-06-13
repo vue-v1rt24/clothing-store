@@ -46,9 +46,10 @@ const loginHandler = async () => {
       body: formFields.value,
     });
 
-    console.log(data);
+    // console.log(data);
 
-    successMsg('Вы вошли в систему');
+    // Выводим уведомление
+    successMsg(data.message);
 
     // Очищение хранилища
     formFields.value.email = formFields.value.password = '';
@@ -57,7 +58,7 @@ const loginHandler = async () => {
     v$.value.$reset();
 
     // Перенаправление на главную страницу
-    // await navigateTo('/');
+    await navigateTo('/admin/dashboard');
   } catch (error: any) {
     userMessageError(error.data.data);
   } finally {

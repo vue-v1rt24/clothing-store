@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type { TypeUser } from '~/types/admin.types';
+
+//
+const user = useCookie<TypeUser>('user');
+
+//
 const openProfile = ref(false);
 </script>
 
@@ -16,8 +22,8 @@ const openProfile = ref(false);
         @click.self="openProfile = !openProfile"
       >
         <div class="header_admin__right_avatar__modal">
-          <span class="header_admin__right_avatar__modal_if">Имя Фамилия</span>
-          <span class="header_admin__right_avatar__modal_email">w@w.ww</span>
+          <span class="header_admin__right_avatar__modal_if">{{ user.name }}</span>
+          <span class="header_admin__right_avatar__modal_email">{{ user.email }}</span>
           <hr class="header_admin__right_avatar__modal_hr" />
           <button type="button" class="header_admin__right_avatar__modal_btn">Выйти</button>
         </div>

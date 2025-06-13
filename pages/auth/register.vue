@@ -16,6 +16,10 @@ const { formFields } = storeToRefs(useAuthStore());
 
 // Валидация
 const rules = {
+  name: {
+    required: helpers.withMessage('Поле обязательное для заполнения', required),
+    minLength: helpers.withMessage('Длина имени не менее 3 символов', minLength(3)),
+  },
   email: {
     required: helpers.withMessage('Поле обязательное для заполнения', required),
     email: helpers.withMessage('Неправильная почта', email),
@@ -69,6 +73,10 @@ const loginHandler = async () => {
     <h1>Регистрация</h1>
 
     <form @submit.prevent="loginHandler">
+      <UIFormError :errors="v$.name.$errors">
+        <UIInput v-model="formFields.name" placeholder="Имя / псевдоним" />
+      </UIFormError>
+
       <UIFormError :errors="v$.email.$errors">
         <UIInput v-model="formFields.email" placeholder="w@w.ww" />
       </UIFormError>

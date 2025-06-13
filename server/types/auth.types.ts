@@ -1,5 +1,6 @@
 // Типизация данных формы
 export type TypeForm = {
+  name: string;
   email: string;
   password: string;
 };

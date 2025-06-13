@@ -28,7 +28,6 @@ const links = [
   height: calc(100% - 60px);
   background-color: white;
   border-right: 1px solid #ececec;
-  padding: 20px 10px 20px 10px;
   z-index: 1;
 
   /*  */
@@ -51,6 +50,7 @@ const links = [
   display: flex;
   flex-direction: column;
   row-gap: 20px;
+  padding: 20px 10px 20px 10px;
   overflow-y: auto;
 }
 

@@ -1,7 +1,8 @@
 import prisma from '~/lib/prisma';
 import { comparePassword } from '~/server/utils/auth/bcrypt.utils';
 import { loginSchema, zShowError } from '~/server/utils/auth/validateUserInput.utils';
-import { singAccessToken, signRefreshToken } from '~/server/utils/auth/jwtToken';
+import { singAccessToken, signRefreshToken } from '~/server/utils/auth/jwtToken.utils';
+import { sendCookie } from '~/server/utils/auth/sendCookie.utils';
 import { type TypeForm, UserEmailType } from '~/server/types/auth.types';
 
 export default defineEventHandler(async (event) => {
@@ -51,18 +52,31 @@ export default defineEventHandler(async (event) => {
     signRefreshToken(userExist.id),
   ]);
 
+  // Устанавливаем куки
+  if (accessToken && typeof accessToken === 'string') {
+    sendCookie(event, 'access_token', accessToken, 60 * 60 * 24 * 7, true);
+  }
+
+  if (refreshToken && typeof refreshToken === 'string') {
+    sendCookie(event, 'refresh_token', refreshToken, 60 * 60 * 24 * 7, true, true);
+  }
+
+  const userData = {
+    id: userExist.id,
+    name: userExist.name,
+    email: userExist.email,
+  };
+
+  sendCookie(event, 'user', JSON.stringify(userData));
+
   // Возвращаем данные
   return {
-    message: 'Вход в систему',
+    message: 'Вы вошли в систему',
     redirect: true,
-    user: {
+    /* user: {
       id: userExist.id,
       name: userExist.name,
       email: userExist.email,
-    },
-    token: {
-      accessToken,
-      refreshToken,
-    },
+    }, */
   };
 });

@@ -5,7 +5,11 @@ definePageMeta({
 </script>
 
 <template>
-  <div>Категории</div>
+  <div>
+    <h1>Категории</h1>
+
+    <AdminCategoriesTable :categories="[]" />
+  </div>
 </template>
 
 <style lang="css" scoped></style>
