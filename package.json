@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@nuxt/image": "^1.10.0",
+    "@outloud/nuxt-modals": "^2.0.4",
     "@pinia/nuxt": "^0.11.1",
     "@prisma/nuxt": "^0.3.0",
     "@types/bcrypt": "^5.0.2",

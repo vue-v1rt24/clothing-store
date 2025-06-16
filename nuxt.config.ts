@@ -2,7 +2,13 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
-  modules: ['@nuxt/image', '@pinia/nuxt', '@prisma/nuxt', 'nuxt-nodemailer'],
+  modules: [
+    '@nuxt/image',
+    '@pinia/nuxt',
+    '@prisma/nuxt',
+    'nuxt-nodemailer',
+    '@outloud/nuxt-modals',
+  ],
 
   //
   runtimeConfig: {
@@ -37,9 +43,10 @@ export default defineNuxtConfig({
 
   /* Настройка плагинов */
 
+  // Работа с изображениями / @nuxt/image
   // image: {},
 
-  //
+  // Отправка почты / nuxt-nodemailer
   nodemailer: {
     from: '"John Doe" <v1rt24@yandex.ru>',
     host: process.env.NUXT_MAIL_HOST,
@@ -50,4 +57,7 @@ export default defineNuxtConfig({
       pass: process.env.NUXT_MAIL_PASSWORD,
     },
   },
+
+  // Модальное окно / @outloud/nuxt-modals
+  modals: {},
 });

@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Таблица пользователей
 model User {
   id           String @id @default(uuid())
   email        String @unique
@@ -14,4 +15,40 @@ model User {
   password     String
   isValidEmail Int
   optCode      String
+}
+
+// Таблица категорий
+model Category {
+  id   String @id @default(uuid())
+  name String @unique
+
+  // Связь с таблицей Product
+  product Product[]
+}
+
+// Таблица товаров
+model Product {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  color     String
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Связь с таблицей Category
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+
+  // Связь с таблицей Image
+  Image Image[]
+}
+
+//
+model Image {
+  id  String @id @default(uuid())
+  url String
+
+  // Связь с таблицей Product
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
 }

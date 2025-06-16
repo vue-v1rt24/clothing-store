@@ -1,6 +1,6 @@
 import prisma from '~/lib/prisma';
 import { comparePassword } from '~/server/utils/auth/bcrypt.utils';
-import { loginSchema, zShowError } from '~/server/utils/auth/validateUserInput.utils';
+import { loginSchemaLogin } from '~/server/utils/auth/validate.utils';
 import { singAccessToken, signRefreshToken } from '~/server/utils/auth/jwtToken.utils';
 import { sendCookie } from '~/server/utils/auth/sendCookie.utils';
 import { type TypeForm, UserEmailType } from '~/server/types/auth.types';
@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   const { email, password } = await readBody<TypeForm>(event);
 
   // Проверка входящих данных
-  const resValid = loginSchema.safeParse({ email, password });
+  const resValid = loginSchemaLogin.safeParse({ email, password });
 
   if (!resValid.success) {
     throw createError({

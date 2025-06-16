@@ -1,4 +1,4 @@
-export const userMessageError = (errors: string[]) => {
+export const messageError = (errors: string[]) => {
   for (const item of errors) {
     errorMsg(item);
   }

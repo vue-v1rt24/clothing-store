@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, helpers } from '@vuelidate/validators';
-import { userMessageError } from '~/utils/user/userMessageError.utils';
+import { messageError } from '~/utils/user/messageError.utils';
 
 //
 definePageMeta({
@@ -14,7 +14,7 @@ const loading = ref(false);
 // Для полей формы
 const { formFields } = storeToRefs(useAuthStore());
 
-// Валидация
+// Валидация формы
 const rules = {
   email: {
     required: helpers.withMessage('Поле обязательное для заполнения', required),
@@ -39,7 +39,7 @@ const loginHandler = async () => {
   //
   loading.value = true;
 
-  // Отправка формы
+  // Запрос
   try {
     const data = await $fetch('/api/auth/login', {
       method: 'POST',
@@ -60,7 +60,7 @@ const loginHandler = async () => {
     // Перенаправление на главную страницу
     await navigateTo('/admin/dashboard');
   } catch (error: any) {
-    userMessageError(error.data.data);
+    messageError(error.data.data);
   } finally {
     loading.value = false;
   }

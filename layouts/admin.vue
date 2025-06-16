@@ -1,4 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { OModalsContainer } from '@outloud/vue-modals';
+import { useModals } from '@outloud/vue-modals';
+
+const modals = useModals();
+const $content = ref<HTMLElement>();
+
+modals.content = $content;
+</script>
 
 <template>
   <div class="admin_panel">
@@ -11,9 +19,11 @@
     <div class="admin_panel__content">
       <AdminDashboardAside />
 
-      <main class="admin_panel__content__right">
+      <main class="admin_panel__content__right" ref="$content">
         <slot />
       </main>
+
+      <OModalsContainer />
     </div>
   </div>
 </template>

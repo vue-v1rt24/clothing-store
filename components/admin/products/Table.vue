@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { TypeCategory } from '~/types/admin.types';
+import type { TypeProduct } from '~/types/admin.types';
 
 defineProps<{
-  categories: TypeCategory[];
+  products: TypeProduct[];
 }>();
 
 const emit = defineEmits<{
-  editCategory: [category: TypeCategory];
+  editProduct: [category: TypeProduct];
 }>();
 </script>
 
@@ -21,11 +21,11 @@ const emit = defineEmits<{
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(category, idx) in categories" :key="category.id">
+        <tr v-for="(category, idx) in products" :key="category.id">
           <th scope="row">{{ idx + 1 }}</th>
           <td>{{ category.name }}</td>
           <td>
-            <button type="button" @click="emit('editCategory', category)">
+            <button type="button" @click="emit('editProduct', category)">
               Редактировать категорию
             </button>
           </td>
