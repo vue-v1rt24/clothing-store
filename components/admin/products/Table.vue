@@ -6,7 +6,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-  editProduct: [category: TypeProduct];
+  editProduct: [product: TypeProduct];
 }>();
 </script>
 
@@ -16,18 +16,22 @@ const emit = defineEmits<{
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Название категории</th>
+          <th scope="col">Название</th>
+          <th scope="col">Категория</th>
+          <th scope="col">Цвет</th>
+          <th scope="col">Стоимость</th>
           <th scope="col">Действия</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(category, idx) in products" :key="category.id">
+        <tr v-for="(product, idx) in products" :key="product.id">
           <th scope="row">{{ idx + 1 }}</th>
-          <td>{{ category.name }}</td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.category.name }}</td>
+          <td>{{ product.color }}</td>
+          <td>{{ product.price }} ₽</td>
           <td>
-            <button type="button" @click="emit('editProduct', category)">
-              Редактировать категорию
-            </button>
+            <button type="button" @click="emit('editProduct', product)">Редактировать товар</button>
           </td>
         </tr>
       </tbody>
@@ -39,7 +43,6 @@ const emit = defineEmits<{
 .table {
   width: 100%;
   border: 1px solid;
-  margin-top: 60px;
 }
 
 .table th {

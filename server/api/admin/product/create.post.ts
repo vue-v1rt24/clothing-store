@@ -1,6 +1,6 @@
 import prisma from '~/lib/prisma';
-import type { TypeProduct } from '~/server/types/product.types';
 import { productSchema } from '~/server/utils/product/validate.utils';
+import type { TypeProduct } from '~/server/types/product.types';
 
 export default defineEventHandler(async (event) => {
   const { name, color, price, categoryId } = await readBody<TypeProduct>(event);

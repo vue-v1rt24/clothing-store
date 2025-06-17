@@ -39,7 +39,6 @@ const emit = defineEmits<{
 .table {
   width: 100%;
   border: 1px solid;
-  margin-top: 60px;
 }
 
 .table th {

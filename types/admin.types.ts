@@ -27,4 +27,14 @@ export type TypeProduct = {
   color: string;
   price: number;
   categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+  category: {
+    id: string;
+    name: string;
+  };
+  image: {
+    id: string;
+    url: string;
+  }[];
 };

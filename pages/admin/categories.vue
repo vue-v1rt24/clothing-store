@@ -8,7 +8,9 @@ definePageMeta({
 });
 
 // Получение всех категорий
-const { data: categories, refresh: getCategories } = await useFetch('/api/admin/category/select');
+const { data: categories, refresh: refreshCategories } = await useFetch(
+  '/api/admin/category/select',
+);
 
 // Модальное окно
 const modals = useModals();
@@ -23,7 +25,7 @@ const modals = useModals();
 const create = async (
   title = 'Создать категорию',
   btnTitle = 'Создать',
-  category = null,
+  category: TypeCategory | null = null,
   type = false,
 ) => {
   const res = await modals.open(import('~/components/admin/categories/CreateCategoryModal.vue'), {
@@ -36,7 +38,7 @@ const create = async (
   });
 
   if (res) {
-    getCategories();
+    refreshCategories();
   }
 };
 
@@ -52,12 +54,18 @@ const editCategory = (category: TypeCategory) => {
     <UIButton width="150px" title="Создать" @btn-handler="create" />
 
     <!--  -->
-    <AdminCategoriesTable
-      v-if="categories?.categories"
-      :categories="categories.categories"
-      @edit-category="editCategory"
-    />
+    <div class="content">
+      <AdminCategoriesTable
+        v-if="categories?.categories"
+        :categories="categories.categories"
+        @edit-category="editCategory"
+      />
+    </div>
   </div>
 </template>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.content {
+  margin-top: 60px;
+}
+</style>

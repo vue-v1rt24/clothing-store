@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Создание категории
+  // Обновление категории
   const category = await prisma.category.update({
     where: {
       id,

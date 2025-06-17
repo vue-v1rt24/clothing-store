@@ -2,7 +2,7 @@
 import { useModal } from '@outloud/vue-modals';
 import { useVuelidate } from '@vuelidate/core';
 import { required, minLength, helpers } from '@vuelidate/validators';
-import { messageError } from '~/utils/user/messageError.utils';
+import { messageValidateError } from '~/utils/messageValidateError.utils';
 import type { TypeCategory, TypeResponseCategory } from '~/types/admin.types';
 
 //
@@ -42,7 +42,7 @@ const createCategoryHandler = async () => {
   // Если есть ошибки
   if (v$.value.$error) return;
 
-  //
+  // Если значение поля не поменялось
   if (formFields.name === category?.name) return;
 
   //
@@ -79,7 +79,7 @@ const createCategoryHandler = async () => {
     //
     successMsg(res.message);
   } catch (error: any) {
-    messageError(error.data.data);
+    messageValidateError(error.data.data);
   } finally {
     loading.value = false;
   }

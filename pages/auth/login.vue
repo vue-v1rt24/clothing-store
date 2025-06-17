@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, helpers } from '@vuelidate/validators';
-import { messageError } from '~/utils/user/messageError.utils';
+import { messageValidateError } from '~/utils/messageValidateError.utils';
 
 //
 definePageMeta({
@@ -60,7 +60,7 @@ const loginHandler = async () => {
     // Перенаправление на главную страницу
     await navigateTo('/admin/dashboard');
   } catch (error: any) {
-    messageError(error.data.data);
+    messageValidateError(error.data.data);
   } finally {
     loading.value = false;
   }

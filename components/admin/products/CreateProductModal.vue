@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { useModal } from '@outloud/vue-modals';
 import { useVuelidate } from '@vuelidate/core';
-import { required, minLength, helpers } from '@vuelidate/validators';
-import { messageError } from '~/utils/user/messageError.utils';
-import type { TypeProduct } from '~/types/admin.types';
+import { required, minLength, minValue, helpers } from '@vuelidate/validators';
+import { messageValidateError } from '~/utils/messageValidateError.utils';
+import type { TypeProduct, TypeCategory } from '~/types/admin.types';
 
 //
 const { title, btnTitle, product, type } = defineProps<{
   title: string;
   btnTitle: string;
   product: TypeProduct | null;
+  categories: TypeCategory[] | undefined;
   type: boolean;
 }>();
 
@@ -23,7 +24,7 @@ const loading = ref(false);
 const formFields = reactive({
   name: product?.name ?? '',
   color: product?.color ?? '',
-  price: product?.price ?? '',
+  price: product?.price ?? 0,
   categoryId: product?.categoryId ?? '',
 });
 
@@ -39,11 +40,10 @@ const rules = {
   },
   price: {
     required: helpers.withMessage('Поле обязательное для заполнения', required),
-    minLength: helpers.withMessage('Стоимость должна быть больше 0', minLength(1)),
+    minValue: helpers.withMessage('Стоимость должна быть больше 0', minValue(1)),
   },
   categoryId: {
     required: helpers.withMessage('Поле обязательное для заполнения', required),
-    minLength: helpers.withMessage('Введите id категории', minLength(1)),
   },
 };
 
@@ -57,8 +57,15 @@ const createProductHandler = async () => {
   // Если есть ошибки
   if (v$.value.$error) return;
 
-  //
-  if (formFields.name === product?.name) return;
+  // Если значение полей не поменялись
+  if (
+    product?.name === formFields.name &&
+    product.color === formFields.color &&
+    product.price === formFields.price &&
+    product.categoryId === formFields.categoryId
+  ) {
+    return;
+  }
 
   //
   loading.value = true;
@@ -94,7 +101,7 @@ const createProductHandler = async () => {
     //
     successMsg(res.message);
   } catch (error: any) {
-    messageError(error.data.data);
+    messageValidateError(error.data.data);
   } finally {
     loading.value = false;
   }
@@ -116,12 +123,15 @@ const createProductHandler = async () => {
       </UIFormError>
 
       <UIFormError :errors="v$.price.$errors">
-        <UIInput v-model="formFields.price" placeholder="Стоимость" />
+        <UIInput v-model.number="formFields.price" type="number" placeholder="Стоимость" min="1" />
       </UIFormError>
 
-      <UIFormError :errors="v$.categoryId.$errors">
-        <UIInput v-model="formFields.categoryId" placeholder="ID категории" />
-      </UIFormError>
+      <UISelect
+        v-if="categories?.length"
+        v-model="formFields.categoryId"
+        option-default="Категории"
+        :options="categories"
+      />
 
       <UIButton type="submit" :title="btnTitle" :loading />
     </form>

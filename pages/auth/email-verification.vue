@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import VOtpInput from 'vue3-otp-input';
-import { messageError } from '~/utils/user/messageError.utils';
+import { messageValidateError } from '~/utils/messageValidateError.utils';
 
 //
 const { formFields } = storeToRefs(useAuthStore());
@@ -39,7 +39,7 @@ const verifyEmail = async () => {
 
     await navigateTo('/auth/login');
   } catch (error: any) {
-    messageError(error.data.data);
+    messageValidateError(error.data.data);
   } finally {
     loading.value = false;
   }
