@@ -6,3 +6,7 @@ export const productSchema = z.object({
   price: z.number().positive('Стоимость должна быть больше 0'),
   categoryId: z.string(),
 });
+
+export const deleteProductSchema = z.object({
+  id: z.string(),
+});

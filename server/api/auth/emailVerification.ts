@@ -1,12 +1,12 @@
 import prisma from '~/lib/prisma';
-import { loginSchemaRegister } from '~/server/utils/auth/validate.utils';
+import { loginSchemaLogin } from '~/server/utils/auth/validate.utils';
 import { type TypeOptCode, UserEmailType } from '~/server/types/auth.types';
 
 export default defineEventHandler(async (event) => {
   const { email, optCode } = await readBody<TypeOptCode>(event);
 
   // Проверка входящих данных
-  const resValid = loginSchemaRegister.safeParse({ email, password: optCode });
+  const resValid = loginSchemaLogin.safeParse({ email, password: optCode });
 
   if (!resValid.success) {
     throw createError({

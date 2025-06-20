@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@prisma/nuxt',
     'nuxt-nodemailer',
     '@outloud/nuxt-modals',
+    'nuxt-file-storage',
   ],
 
   //
@@ -60,4 +61,9 @@ export default defineNuxtConfig({
 
   // Модальное окно / @outloud/nuxt-modals
   modals: {},
+
+  // Загрузка изображений / nuxt-file-storage
+  fileStorage: {
+    mount: process.cwd() + process.env.PATH_SAVE_FILE_IMAGES,
+  },
 });

@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "nodemailer": "^6.10.1",
+    "nuxt-file-storage": "^0.3.0",
     "nuxt-nodemailer": "^1.1.2"
   }
 }

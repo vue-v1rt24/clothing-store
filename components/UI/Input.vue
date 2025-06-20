@@ -2,7 +2,7 @@
 const modelValue = defineModel();
 
 const { type = 'text' } = defineProps<{
-  type?: 'text' | 'email' | 'number' | 'search';
+  type?: 'text' | 'email' | 'number' | 'search' | 'file';
   placeholder?: string;
 }>();
 </script>

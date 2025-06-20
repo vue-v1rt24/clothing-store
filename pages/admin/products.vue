@@ -7,19 +7,19 @@ definePageMeta({
   layout: 'admin',
 });
 
-// Для поиска товара
-const search = ref('');
+//
+const route = useRoute();
 
-// Постраничная навигация
-const page = ref(1);
-const limit = ref(10);
+//
+const loading = ref(false);
+
+// Для поиска товара
+const search = ref(route.query.search);
 
 // Получение всех товаров
 const { data: products, refresh: refreshProducts } = await useFetch('/api/admin/product/select', {
   query: {
     search,
-    page,
-    limit,
   },
 });
 
@@ -29,13 +29,6 @@ const { data: cats, refresh: refreshCategories } = await useFetch('/api/admin/ca
 // Модальное окно
 const modals = useModals();
 
-/**
- *
- * @param title Заголовок модального окна
- * @param btnTitle Название кнопки
- * @param product Объект продуктов
- * @param type Тип
- */
 const create = async (
   title = 'Создать товар',
   btnTitle = 'Создать',
@@ -63,10 +56,106 @@ const editProduct = (product: TypeProduct) => {
   create('Редактировать товар', 'Редактировать', product, cats.value?.categories, true);
 };
 
+// Удаление товара
+const deleteProduct = async (product: TypeProduct) => {
+  const confirm = await modals.open(import('~/components/UI/Confirm.vue'), {
+    props: {
+      title: 'Удалить запись?',
+      text: 'Важно: необратимое действие',
+    },
+  });
+
+  if (!confirm) return;
+
+  //
+  try {
+    const res = await $fetch('/api/admin/product/delete', {
+      method: 'DELETE',
+      query: {
+        id: product.id,
+      },
+    });
+
+    refreshProducts();
+
+    successMsg(res.message);
+  } catch (error: any) {
+    errorMsg(error.data.message);
+  }
+};
+
+// Загрузка изображения
+const uploadImage = async (product: TypeProduct) => {
+  const res = await modals.open(import('~/components/admin/products/UploadImageModal.vue'), {
+    props: {
+      productId: product.id,
+    },
+  });
+
+  if (res) {
+    refreshProducts();
+  }
+};
+
+// Показ всех изображений товара
+const showUploadImages = async (product: TypeProduct) => {
+  await modals.open(import('~/components/admin/products/ShowUploadImagesModal.vue'), {
+    props: {
+      images: product.image,
+    },
+  });
+};
+
 // Поиск товара
-const searchHandler = (val: string) => {
+const searchHandler = async (val: string) => {
+  await navigateTo({
+    query: {
+      search: val,
+    },
+  });
+
   search.value = val;
 };
+
+// === Кнопка "Показать ещё" ===
+
+// Для вывода кнопки
+const moreBtn = ref(products.value?.cursorId);
+
+// Клик по кнопке
+const moreHandler = async () => {
+  loading.value = true;
+
+  try {
+    // Получение всех товаров
+    const res = await $fetch('/api/admin/product/select', {
+      query: {
+        more: 'load',
+        search: search.value,
+      },
+    });
+
+    // console.log(res);
+
+    // Добавляем товары
+    products.value?.products.push(...res.products);
+
+    // Установка значения для кнопки "Показать ещё"
+    moreBtn.value = res.cursorId;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// === /Кнопка "Показать ещё" ===
+
+// Отслеживание получения товаров
+watch(products, () => {
+  // Установка значения для кнопки "Показать ещё"
+  moreBtn.value = products.value?.cursorId;
+});
 </script>
 
 <template>
@@ -85,9 +174,21 @@ const searchHandler = (val: string) => {
         v-if="products?.products.length"
         :products="products.products"
         @edit-product="editProduct"
+        @delete-product="deleteProduct"
+        @upload-image="uploadImage"
+        @show-upload-images="showUploadImages"
       />
 
       <div v-else>Товаров пока нет</div>
+
+      <!-- Кнопка показать ещё -->
+      <UIButton
+        v-if="moreBtn"
+        title="Загрузить ещё"
+        :loading
+        @btn-handler="moreHandler"
+        class="btn_load"
+      />
     </div>
   </div>
 </template>
@@ -103,5 +204,11 @@ const searchHandler = (val: string) => {
 
 .content {
   margin-top: 60px;
+}
+
+/*  */
+
+.btn_load {
+  margin-top: 30px;
 }
 </style>

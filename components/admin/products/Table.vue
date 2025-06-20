@@ -7,6 +7,9 @@ defineProps<{
 
 const emit = defineEmits<{
   editProduct: [product: TypeProduct];
+  deleteProduct: [product: TypeProduct];
+  uploadImage: [product: TypeProduct];
+  showUploadImages: [product: TypeProduct];
 }>();
 </script>
 
@@ -31,7 +34,10 @@ const emit = defineEmits<{
           <td>{{ product.color }}</td>
           <td>{{ product.price }} ₽</td>
           <td>
-            <button type="button" @click="emit('editProduct', product)">Редактировать товар</button>
+            <button type="button" @click="emit('editProduct', product)">✎</button>
+            <button type="button" @click="emit('deleteProduct', product)">✘</button>
+            <button type="button" @click="emit('uploadImage', product)">📷</button>
+            <button type="button" @click="emit('showUploadImages', product)">👁️‍🗨️</button>
           </td>
         </tr>
       </tbody>

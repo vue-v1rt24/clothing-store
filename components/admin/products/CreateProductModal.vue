@@ -98,7 +98,7 @@ const createProductHandler = async () => {
     // Закрытие модального окна
     close(true);
 
-    //
+    // Сообщение
     successMsg(res.message);
   } catch (error: any) {
     messageValidateError(error.data.data);

@@ -1,13 +1,24 @@
 import prisma from '~/lib/prisma';
 
+// id крайнего запроса (для постраничной навигации)
+let cursorId: string | undefined;
+
 export default defineEventHandler(async (event) => {
-  const { search, page, limit } = getQuery(event) as {
+  const { search, more } = getQuery(event) as {
     search: string;
-    page: number;
-    limit: number;
+    more: string;
   };
 
+  // Сброс курсора постраничной навигации
+  if (!more) {
+    cursorId = undefined;
+  }
+
+  // Запрос
   const products = await prisma.product.findMany({
+    take: 2,
+    skip: cursorId ? 1 : 0,
+    cursor: cursorId ? { id: cursorId } : undefined,
     where: {
       name: {
         contains: search,
@@ -25,6 +36,7 @@ export default defineEventHandler(async (event) => {
         select: {
           id: true,
           url: true,
+          productId: true,
         },
       },
     },
@@ -33,8 +45,13 @@ export default defineEventHandler(async (event) => {
     },
   });
 
+  // Установка курсора для постраничной навигации
+  cursorId = products[1]?.id;
+  // console.log('cursorId: ', cursorId);
+
   // Возвращаем значения
   return {
     products,
+    cursorId,
   };
 });

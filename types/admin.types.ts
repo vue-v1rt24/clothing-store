@@ -36,5 +36,13 @@ export type TypeProduct = {
   image: {
     id: string;
     url: string;
+    productId: string;
   }[];
+};
+
+// Для загруженных изображений товара
+export type TypeUploadImage = {
+  id: string;
+  url: string;
+  productId: string;
 };
