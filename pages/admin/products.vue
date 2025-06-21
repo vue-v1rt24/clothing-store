@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useModals } from '@outloud/vue-modals';
-import type { TypeProduct, TypeCategory } from '~/types/admin.types';
+import type { TypeProduct, TypeCategory, TypeUploadContentData } from '~/types/admin.types';
 
 //
 definePageMeta({
@@ -69,7 +69,7 @@ const deleteProduct = async (product: TypeProduct) => {
 
   //
   try {
-    const res = await $fetch('/api/admin/product/delete', {
+    const res = await $fetch('/api/admin/product/removeProduct', {
       method: 'DELETE',
       query: {
         id: product.id,
@@ -97,11 +97,14 @@ const uploadImage = async (product: TypeProduct) => {
   }
 };
 
-// Показ всех изображений товара
+// Показ всех изображений товара / Удаление изображения товара
 const showUploadImages = async (product: TypeProduct) => {
   await modals.open(import('~/components/admin/products/ShowUploadImagesModal.vue'), {
     props: {
       images: product.image,
+    },
+    listeners: {
+      successRemoveImgProduct: refreshProducts,
     },
   });
 };
@@ -117,45 +120,24 @@ const searchHandler = async (val: string) => {
   search.value = val;
 };
 
-// === Кнопка "Показать ещё" ===
+// === Кнопка "Показать ещё"
+// Курсор постраничной навигации
+const cursorId = ref(products.value?.cursorId);
 
-// Для вывода кнопки
-const moreBtn = ref(products.value?.cursorId);
+const uploadContentHandler = (uploadData: TypeUploadContentData<TypeProduct>) => {
+  // Добавляем товары
+  products.value?.items.push(...uploadData.items);
 
-// Клик по кнопке
-const moreHandler = async () => {
-  loading.value = true;
-
-  try {
-    // Получение всех товаров
-    const res = await $fetch('/api/admin/product/select', {
-      query: {
-        more: 'load',
-        search: search.value,
-      },
-    });
-
-    // console.log(res);
-
-    // Добавляем товары
-    products.value?.products.push(...res.products);
-
-    // Установка значения для кнопки "Показать ещё"
-    moreBtn.value = res.cursorId;
-  } catch (error) {
-    console.log(error);
-  } finally {
-    loading.value = false;
-  }
+  // Установка значения курсора постраничной навигации
+  cursorId.value = uploadData.cursorId;
 };
-
-// === /Кнопка "Показать ещё" ===
 
 // Отслеживание получения товаров
 watch(products, () => {
-  // Установка значения для кнопки "Показать ещё"
-  moreBtn.value = products.value?.cursorId;
+  // Установка значения курсора постраничной навигации
+  cursorId.value = products.value?.cursorId;
 });
+// === /Кнопка "Показать ещё"
 </script>
 
 <template>
@@ -171,8 +153,8 @@ watch(products, () => {
     <!--  -->
     <div class="content">
       <AdminProductsTable
-        v-if="products?.products.length"
-        :products="products.products"
+        v-if="products?.items.length"
+        :products="products.items"
         @edit-product="editProduct"
         @delete-product="deleteProduct"
         @upload-image="uploadImage"
@@ -180,16 +162,17 @@ watch(products, () => {
       />
 
       <div v-else>Товаров пока нет</div>
-
-      <!-- Кнопка показать ещё -->
-      <UIButton
-        v-if="moreBtn"
-        title="Загрузить ещё"
-        :loading
-        @btn-handler="moreHandler"
-        class="btn_load"
-      />
     </div>
+
+    <!-- Кнопка показать ещё -->
+    <!-- @vue-generic {import('@/types/admin.types').TypeProduct} -->
+    <UIUploadingContent
+      v-if="cursorId"
+      url="/api/admin/product/select"
+      :cursor-id="cursorId"
+      :search
+      @upload-content-handler="uploadContentHandler"
+    />
   </div>
 </template>
 
@@ -204,11 +187,6 @@ watch(products, () => {
 
 .content {
   margin-top: 60px;
-}
-
-/*  */
-
-.btn_load {
-  margin-top: 30px;
+  margin-bottom: 30px;
 }
 </style>

@@ -1,8 +1,9 @@
-// ================= Пользователь из куки
+// ================= Пользователь
 export type TypeUser = {
   id: string;
-  email: string | null;
-  name: string | null;
+  email: string;
+  name: string;
+  isValidEmail?: number;
 };
 
 // ================= Страница админки "Категории"
@@ -46,3 +47,10 @@ export type TypeUploadImage = {
   url: string;
   productId: string;
 };
+
+// ================= Страница админки "Пользователи"
+
+// ================= Общие
+
+// Для загрузки данных по кнопке "Показать ещё"
+export type TypeUploadContentData<T> = { items: T[]; cursorId: string };

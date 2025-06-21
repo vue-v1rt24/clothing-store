@@ -12,8 +12,12 @@ const imagePreview = useTemplateRef('imagePreview');
 
 const isLoadImg = ref(false);
 
+const loading = ref(true);
+
 // Запрос
 const handlerSaveImg = async (evt: Event) => {
+  loading.value = true;
+
   try {
     const res = await $fetch('/api/admin/product/uploadImage', {
       method: 'POST',
@@ -42,6 +46,9 @@ watch(files.value, async (val) => {
 
   // Показываем блок с выбранным изображением
   isLoadImg.value = true;
+
+  // Разблокировка кнопки "Добавить"
+  loading.value = false;
 });
 </script>
 
@@ -61,7 +68,7 @@ watch(files.value, async (val) => {
         accept=".png, .jpg, .jpeg, .gif, .webp, .avif"
       />
 
-      <UIButton type="submit" title="Добавить" :loading="!isLoadImg" />
+      <UIButton type="submit" title="Добавить" :loading />
     </form>
   </UIModal>
 </template>

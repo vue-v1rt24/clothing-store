@@ -49,6 +49,6 @@ model Image {
   url String
 
   // Связь с таблицей Product
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
 }

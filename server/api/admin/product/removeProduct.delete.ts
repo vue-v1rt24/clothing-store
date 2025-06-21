@@ -16,11 +16,19 @@ export default defineEventHandler(async (event) => {
   }
 
   // Обновление товара
-  await prisma.product.delete({
+  const product = await prisma.product.delete({
     where: {
       id,
     },
+    include: {
+      image: true,
+    },
   });
+
+  // Удаляем изображения из файловой системы
+  for (const item of product.image) {
+    await deleteFile(item.url, '/');
+  }
 
   // Возвращаем значения
   return {

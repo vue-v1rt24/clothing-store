@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Запрос
-  const products = await prisma.product.findMany({
+  const users = await prisma.user.findMany({
     take: 2,
     skip: cursorId ? 1 : 0,
     cursor: cursorId ? { id: cursorId } : undefined,
@@ -25,33 +25,19 @@ export default defineEventHandler(async (event) => {
         mode: 'insensitive',
       },
     },
-    include: {
-      category: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      image: {
-        select: {
-          id: true,
-          url: true,
-          productId: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: 'desc',
+    omit: {
+      optCode: true,
+      password: true,
     },
   });
 
   // Установка курсора для постраничной навигации
-  cursorId = products[1]?.id;
+  cursorId = users[1]?.id;
   // console.log('cursorId: ', cursorId);
 
   // Возвращаем значения
   return {
-    items: products,
+    items: users,
     cursorId,
   };
 });
