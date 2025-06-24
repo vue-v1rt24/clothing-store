@@ -55,6 +55,7 @@ const createCategoryHandler = async () => {
     if (type) {
       res = await $fetch('/api/admin/category/update', {
         method: 'PATCH',
+        headers: useHeaders(),
         body: {
           id: category?.id,
           ...formFields,
@@ -63,6 +64,7 @@ const createCategoryHandler = async () => {
     } else {
       res = await $fetch('/api/admin/category/create', {
         method: 'POST',
+        headers: useHeaders(),
         body: formFields,
       });
     }

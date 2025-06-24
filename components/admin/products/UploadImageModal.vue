@@ -21,6 +21,7 @@ const handlerSaveImg = async (evt: Event) => {
   try {
     const res = await $fetch('/api/admin/product/uploadImage', {
       method: 'POST',
+      headers: useHeaders(),
       body: {
         productId,
         files: files.value,

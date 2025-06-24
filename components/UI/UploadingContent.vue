@@ -5,10 +5,12 @@ import type { TypeUploadContentData } from '~/types/admin.types';
 //
 const {
   url,
+  headers,
   title = 'Загрузить ещё',
   search,
 } = defineProps<{
   url: string; // ссылка запроса для получения данных
+  headers?: HeadersInit | undefined;
   cursorId: string; // курсор постраничной навигации
   title?: string; // название кнопки
   search?: LocationQueryValue | LocationQueryValue[]; // если есть поиск по элементам (должен быть гет-параметром(query) vue-router)
@@ -28,6 +30,7 @@ const moreHandler = async () => {
   try {
     // Получение всех товаров
     const res = await $fetch<TypeUploadContentData<T>>(url, {
+      headers,
       query: {
         more: 'load',
         search,

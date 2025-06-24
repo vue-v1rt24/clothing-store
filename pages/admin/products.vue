@@ -17,14 +17,31 @@ const loading = ref(false);
 const search = ref(route.query.search);
 
 // Получение всех товаров
-const { data: products, refresh: refreshProducts } = await useFetch('/api/admin/product/select', {
+const {
+  data: products,
+  refresh: refreshProducts,
+  error: errorSelect,
+} = await useFetch('/api/admin/product/select', {
+  headers: useHeaders(),
   query: {
     search,
   },
 });
 
+// Если нет авторизации
+if (errorSelect.value?.statusCode === 401) {
+  await navigateTo({
+    path: '/auth/login',
+    query: {
+      message: 'login',
+    },
+  });
+}
+
 // Получение всех категорий
-const { data: cats, refresh: refreshCategories } = await useFetch('/api/admin/category/select');
+const { data: cats, refresh: refreshCategories } = await useFetch('/api/admin/category/select', {
+  headers: useHeaders(),
+});
 
 // Модальное окно
 const modals = useModals();
@@ -71,6 +88,7 @@ const deleteProduct = async (product: TypeProduct) => {
   try {
     const res = await $fetch('/api/admin/product/removeProduct', {
       method: 'DELETE',
+      headers: useHeaders(),
       query: {
         id: product.id,
       },
@@ -169,6 +187,7 @@ watch(products, () => {
     <UIUploadingContent
       v-if="cursorId"
       url="/api/admin/product/select"
+      :headers="useHeaders()"
       :cursor-id="cursorId"
       :search
       @upload-content-handler="uploadContentHandler"

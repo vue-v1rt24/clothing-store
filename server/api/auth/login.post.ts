@@ -2,7 +2,6 @@ import prisma from '~/lib/prisma';
 import { comparePassword } from '~/server/utils/auth/bcrypt.utils';
 import { loginSchemaLogin } from '~/server/utils/auth/validate.utils';
 import { singAccessToken, signRefreshToken } from '~/server/utils/auth/jwtToken.utils';
-import { sendCookie } from '~/server/utils/auth/sendCookie.utils';
 import { type TypeForm, UserEmailType } from '~/server/types/auth.types';
 
 export default defineEventHandler(async (event) => {
@@ -48,17 +47,24 @@ export default defineEventHandler(async (event) => {
 
   // Создаём токены авторизации
   const [accessToken, refreshToken] = await Promise.all([
-    singAccessToken(userExist.id),
-    signRefreshToken(userExist.id),
+    singAccessToken({ id: userExist.id, name: userExist.name, email: userExist.email }),
+    signRefreshToken({ id: userExist.id, name: userExist.name, email: userExist.email }),
   ]);
 
   // Устанавливаем куки
   if (accessToken && typeof accessToken === 'string') {
-    sendCookie(event, 'access_token', accessToken, 60 * 60 * 24 * 7, true);
+    setCookie(event, 'access_token', accessToken, {
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: true,
+    });
   }
 
   if (refreshToken && typeof refreshToken === 'string') {
-    sendCookie(event, 'refresh_token', refreshToken, 60 * 60 * 24 * 7, true, true);
+    setCookie(event, 'refresh_token', refreshToken, {
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: true,
+      httpOnly: true,
+    });
   }
 
   const userData = {
@@ -67,16 +73,9 @@ export default defineEventHandler(async (event) => {
     email: userExist.email,
   };
 
-  sendCookie(event, 'user', JSON.stringify(userData));
-
   // Возвращаем данные
   return {
     message: 'Вы вошли в систему',
     redirect: true,
-    /* user: {
-      id: userExist.id,
-      name: userExist.name,
-      email: userExist.email,
-    }, */
   };
 });

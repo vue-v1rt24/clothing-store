@@ -40,6 +40,7 @@ const removeImg = async (evt: Event) => {
   try {
     const res = await $fetch('/api/admin/product/removeUploadImg', {
       method: 'DELETE',
+      headers: useHeaders(),
       query: {
         id,
       },

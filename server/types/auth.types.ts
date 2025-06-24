@@ -1,3 +1,10 @@
+// Пользователь для JWT
+export type TypeUser = {
+  id: string;
+  name: string;
+  email: string;
+};
+
 // Типизация данных формы
 export type TypeForm = {
   name: string;

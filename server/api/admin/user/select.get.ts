@@ -1,9 +1,11 @@
 import prisma from '~/lib/prisma';
+import { verifyToken } from '~/server/utils/auth/jwtToken.utils';
 
 // id крайнего запроса (для постраничной навигации)
 let cursorId: string | undefined;
 
 export default defineEventHandler(async (event) => {
+  // Гет параметры
   const { search, more } = getQuery(event) as {
     search: string;
     more: string;

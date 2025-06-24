@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, helpers } from '@vuelidate/validators';
+import { ru } from 'zod/v4/locales';
 import { messageValidateError } from '~/utils/messageValidateError.utils';
 
 //
@@ -9,10 +10,14 @@ definePageMeta({
 });
 
 //
+const route = useRoute();
+
+//
 const loading = ref(false);
 
 // Для полей формы
-const { formFields } = storeToRefs(useAuthStore());
+const store = useAuthStore();
+const { formFields } = storeToRefs(store);
 
 // Валидация формы
 const rules = {
@@ -65,6 +70,14 @@ const loginHandler = async () => {
     loading.value = false;
   }
 };
+
+//
+onMounted(() => {
+  // Показ сообщения, если стал недействителен токен
+  if (route.query.message) {
+    errorMsg(messages(route.query.message as TypeMessages));
+  }
+});
 </script>
 
 <template>

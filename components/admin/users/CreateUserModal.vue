@@ -77,6 +77,7 @@ const createProductHandler = async () => {
     if (type) {
       res = await $fetch('/api/admin/product/update', {
         method: 'PATCH',
+        headers: useHeaders(),
         body: {
           id: product?.id,
           ...formFields,
@@ -85,6 +86,7 @@ const createProductHandler = async () => {
     } else {
       res = await $fetch('/api/admin/product/create', {
         method: 'POST',
+        headers: useHeaders(),
         body: formFields,
       });
     }

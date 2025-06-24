@@ -8,9 +8,23 @@ definePageMeta({
 });
 
 // Получение всех категорий
-const { data: categories, refresh: refreshCategories } = await useFetch(
-  '/api/admin/category/select',
-);
+const {
+  data: categories,
+  refresh: refreshCategories,
+  error: errorSelect,
+} = await useFetch('/api/admin/category/select', {
+  headers: useHeaders(),
+});
+
+// Если нет авторизации
+if (errorSelect.value?.statusCode === 401) {
+  await navigateTo({
+    path: '/auth/login',
+    query: {
+      message: 'login',
+    },
+  });
+}
 
 // Модальное окно
 const modals = useModals();

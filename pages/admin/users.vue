@@ -14,11 +14,22 @@ const route = useRoute();
 const search = ref(route.query.search);
 
 // Получение всех пользователей
-const { data: users } = await useFetch('/api/admin/user/select', {
+const { data: users, error: errorSelect } = await useFetch('/api/admin/user/select', {
+  headers: useHeaders(),
   query: {
     search,
   },
 });
+
+// Если нет авторизации
+if (errorSelect.value?.statusCode === 401) {
+  await navigateTo({
+    path: '/auth/login',
+    query: {
+      message: 'login',
+    },
+  });
+}
 
 // Модальное окно
 const modals = useModals();
@@ -73,6 +84,7 @@ watch(users, () => {
     <UIUploadingContent
       v-if="cursorId"
       url="/api/admin/user/select"
+      :headers="useHeaders()"
       :cursor-id="cursorId"
       :search
       @upload-content-handler="uploadContentHandler"

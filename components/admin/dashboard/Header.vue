@@ -1,11 +1,24 @@
 <script setup lang="ts">
-import type { TypeUser } from '~/types/admin.types';
+// Данные пользователя
+const store = useAuthStore();
+const { user } = storeToRefs(store);
 
-//
-const user = useCookie<TypeUser>('user');
-
-//
+// Открытие / Закрытие окна пользователя
 const openProfile = ref(false);
+
+// Выход из учётной записи
+const accessToken = useCookie('access_token');
+
+const logout = async () => {
+  accessToken.value = null;
+
+  await navigateTo({
+    path: '/auth/login',
+    query: {
+      message: 'logout',
+    },
+  });
+};
 </script>
 
 <template>
@@ -22,10 +35,12 @@ const openProfile = ref(false);
         @click.self="openProfile = !openProfile"
       >
         <div class="header_admin__right_avatar__modal">
-          <span class="header_admin__right_avatar__modal_if">{{ user.name }}</span>
-          <span class="header_admin__right_avatar__modal_email">{{ user.email }}</span>
+          <span class="header_admin__right_avatar__modal_if">{{ user?.name }}</span>
+          <span class="header_admin__right_avatar__modal_email">{{ user?.email }}</span>
           <hr class="header_admin__right_avatar__modal_hr" />
-          <button type="button" class="header_admin__right_avatar__modal_btn">Выйти</button>
+          <button type="button" class="header_admin__right_avatar__modal_btn" @click="logout">
+            Выйти
+          </button>
         </div>
       </div>
     </li>
