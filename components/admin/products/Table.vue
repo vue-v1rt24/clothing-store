@@ -31,7 +31,7 @@ const emit = defineEmits<{
           <th scope="row">{{ idx + 1 }}</th>
           <td>{{ product.name }}</td>
           <td>{{ product.category.name }}</td>
-          <td>{{ product.color }}</td>
+          <td>{{ product.color.name }}</td>
           <td>{{ product.price }} ₽</td>
           <td>
             <button type="button" @click="emit('editProduct', product)">✎</button>

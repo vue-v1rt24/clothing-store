@@ -1,7 +1,8 @@
 export type TypeProduct = {
   id?: string;
   name: string;
-  color: string;
+  slug?: string;
+  colorId: string;
   price: number;
   categoryId: string;
 };

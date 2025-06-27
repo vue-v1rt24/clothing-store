@@ -1,4 +1,5 @@
 import prisma from '~/lib/prisma';
+import slugify from 'slugify';
 import type { TypeCategory } from '~/server/types/category.types';
 import { categorySchema } from '~/server/utils/category/validate.utils';
 
@@ -35,6 +36,7 @@ export default defineEventHandler(async (event) => {
   const category = await prisma.category.create({
     data: {
       name,
+      slug: slugify(name, { lower: true }),
     },
   });
 

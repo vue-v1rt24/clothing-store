@@ -1,12 +1,13 @@
 import prisma from '~/lib/prisma';
+import slugify from 'slugify';
 import { TypeProduct } from '~/server/types/product.types';
 import { productSchema } from '~/server/utils/product/validate.utils';
 
 export default defineEventHandler(async (event) => {
-  const { id, name, color, price, categoryId } = await readBody<TypeProduct>(event);
+  const { id, name, colorId, price, categoryId } = await readBody<TypeProduct>(event);
 
   // Валидация
-  const res = productSchema.safeParse({ name, color, price, categoryId });
+  const res = productSchema.safeParse({ name, colorId, price, categoryId });
 
   if (!res.success) {
     throw createError({
@@ -23,7 +24,8 @@ export default defineEventHandler(async (event) => {
     },
     data: {
       name,
-      color,
+      slug: slugify(name, { lower: true }),
+      colorId,
       price,
       categoryId,
     },

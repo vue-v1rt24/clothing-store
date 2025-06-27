@@ -45,7 +45,9 @@ export default defineNuxtConfig({
   /* Настройка плагинов */
 
   // Работа с изображениями / @nuxt/image
-  // image: {},
+  image: {
+    domains: [process.env.NUXT_PUBLIC_DOMAINS],
+  },
 
   // Отправка почты / nuxt-nodemailer
   nodemailer: {

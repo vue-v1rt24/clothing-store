@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { useModals } from '@outloud/vue-modals';
-import type { TypeProduct, TypeCategory, TypeUploadContentData } from '~/types/admin.types';
+import type {
+  TypeProduct,
+  TypeColor,
+  TypeCategory,
+  TypeUploadContentData,
+} from '~/types/admin.types';
 
 //
 definePageMeta({
@@ -9,9 +14,6 @@ definePageMeta({
 
 //
 const route = useRoute();
-
-//
-const loading = ref(false);
 
 // Для поиска товара
 const search = ref(route.query.search);
@@ -38,19 +40,15 @@ if (errorSelect.value?.statusCode === 401) {
   });
 }
 
-// Получение всех категорий
-const { data: cats, refresh: refreshCategories } = await useFetch('/api/admin/category/select', {
-  headers: useHeaders(),
-});
-
-// Модальное окно
+// Модальное окно создания товара
 const modals = useModals();
 
 const create = async (
   title = 'Создать товар',
   btnTitle = 'Создать',
   product: TypeProduct | null = null,
-  categories: TypeCategory[] | undefined = cats.value?.categories,
+  categories: TypeCategory[] | undefined = products.value?.categories,
+  colors: TypeColor[] | undefined = products.value?.colors,
   type = false,
 ) => {
   const res = await modals.open(import('~/components/admin/products/CreateProductModal.vue'), {
@@ -59,6 +57,7 @@ const create = async (
       btnTitle,
       product,
       categories,
+      colors,
       type,
     },
   });
@@ -70,7 +69,14 @@ const create = async (
 
 // Редактирование товара
 const editProduct = (product: TypeProduct) => {
-  create('Редактировать товар', 'Редактировать', product, cats.value?.categories, true);
+  create(
+    'Редактировать товар',
+    'Редактировать',
+    product,
+    products.value?.categories,
+    products.value?.colors,
+    true,
+  );
 };
 
 // Удаление товара
@@ -165,7 +171,7 @@ watch(products, () => {
       <UIButton width="150px" title="Создать" @btn-handler="create" />
 
       <!-- Кнопка поиска -->
-      <UISearch @search-handler="searchHandler" />
+      <UISearch v-if="products?.items.length" @search-handler="searchHandler" />
     </div>
 
     <!--  -->

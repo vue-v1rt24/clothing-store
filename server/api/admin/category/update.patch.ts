@@ -1,4 +1,5 @@
 import prisma from '~/lib/prisma';
+import slugify from 'slugify';
 import type { TypeCategory } from '~/server/types/category.types';
 import { categorySchema2 } from '~/server/utils/category/validate.utils';
 
@@ -23,6 +24,7 @@ export default defineEventHandler(async (event) => {
     },
     data: {
       name,
+      slug: slugify(name, { lower: true }),
     },
   });
 

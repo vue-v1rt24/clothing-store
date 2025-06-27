@@ -3,7 +3,7 @@ import { useModal } from '@outloud/vue-modals';
 import { useVuelidate } from '@vuelidate/core';
 import { required, minLength, minValue, helpers } from '@vuelidate/validators';
 import { messageValidateError } from '~/utils/messageValidateError.utils';
-import type { TypeProduct, TypeCategory } from '~/types/admin.types';
+import type { TypeProduct, TypeColor, TypeCategory } from '~/types/admin.types';
 
 //
 const { title, btnTitle, product, type } = defineProps<{
@@ -11,6 +11,7 @@ const { title, btnTitle, product, type } = defineProps<{
   btnTitle: string;
   product: TypeProduct | null;
   categories: TypeCategory[] | undefined;
+  colors: TypeColor[] | undefined;
   type: boolean;
 }>();
 
@@ -23,7 +24,7 @@ const loading = ref(false);
 // Для полей формы
 const formFields = reactive({
   name: product?.name ?? '',
-  color: product?.color ?? '',
+  colorId: product?.colorId ?? '',
   price: product?.price ?? 0,
   categoryId: product?.categoryId ?? '',
 });
@@ -34,9 +35,8 @@ const rules = {
     required: helpers.withMessage('Поле обязательное для заполнения', required),
     minLength: helpers.withMessage('Длина названия товара не менее 3 символов', minLength(3)),
   },
-  color: {
+  colorId: {
     required: helpers.withMessage('Поле обязательное для заполнения', required),
-    minLength: helpers.withMessage('Длина названия товара не менее 3 символов', minLength(3)),
   },
   price: {
     required: helpers.withMessage('Поле обязательное для заполнения', required),
@@ -60,7 +60,7 @@ const createProductHandler = async () => {
   // Если значение полей не поменялись
   if (
     product?.name === formFields.name &&
-    product.color === formFields.color &&
+    product.colorId === formFields.colorId &&
     product.price === formFields.price &&
     product.categoryId === formFields.categoryId
   ) {
@@ -120,8 +120,13 @@ const createProductHandler = async () => {
         <UIInput v-model="formFields.name" placeholder="Название товара" />
       </UIFormError>
 
-      <UIFormError :errors="v$.color.$errors">
-        <UIInput v-model="formFields.color" placeholder="Цвет" />
+      <UIFormError :errors="v$.colorId.$errors">
+        <UISelect
+          v-if="colors?.length"
+          v-model="formFields.colorId"
+          option-default="Цвет"
+          :options="colors"
+        />
       </UIFormError>
 
       <UIFormError :errors="v$.price.$errors">

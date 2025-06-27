@@ -70,10 +70,12 @@ const editCategory = (category: TypeCategory) => {
     <!--  -->
     <div class="content">
       <AdminCategoriesTable
-        v-if="categories?.categories"
+        v-if="categories?.categories.length"
         :categories="categories.categories"
         @edit-category="editCategory"
       />
+
+      <div v-else>Категорий пока нет</div>
     </div>
   </div>
 </template>

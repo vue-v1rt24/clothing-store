@@ -21,26 +21,10 @@ model User {
 model Category {
   id   String @id @default(uuid())
   name String @unique
+  slug String
 
   // Связь с таблицей Product
   product Product[]
-}
-
-// Таблица товаров
-model Product {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  color     String
-  price     Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Связь с таблицей Category
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId String
-
-  // Связь с таблицей Image
-  image Image[]
 }
 
 //
@@ -51,4 +35,34 @@ model Image {
   // Связь с таблицей Product
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
+}
+
+// Таблица цветов товаров
+model Color {
+  id   String @id @default(uuid())
+  name String @unique
+
+  // Связь с таблицей Product
+  product Product[]
+}
+
+// Таблица товаров
+model Product {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  slug      String
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Связь с таблицей Category
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+
+  // Связь с таблицей Image
+  image Image[]
+
+  // Связь с таблицей Color
+  color   Color  @relation(fields: [colorId], references: [id])
+  colorId String
 }

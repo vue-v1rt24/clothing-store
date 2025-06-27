@@ -1,10 +1,8 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div>
-    <NuxtRouteAnnouncer />
-    <Header />
-    <slot />
+  <div class="filters">
+    <ECommerceFiltersRangeSlider />
   </div>
 </template>
 

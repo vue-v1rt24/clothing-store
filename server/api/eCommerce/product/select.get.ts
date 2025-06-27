@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Запрос на получение товаров
-  const productsData = await prisma.product.findMany({
+  const products = await prisma.product.findMany({
     take: 2,
     skip: cursorId ? 1 : 0,
     cursor: cursorId ? { id: cursorId } : undefined,
@@ -25,19 +25,21 @@ export default defineEventHandler(async (event) => {
         mode: 'insensitive',
       },
     },
+    omit: {
+      categoryId: true,
+      colorId: true,
+      createdAt: true,
+      updatedAt: true,
+    },
     include: {
-      category: {
+      color: {
         select: {
-          id: true,
           name: true,
         },
       },
-      color: true,
       image: {
         select: {
-          id: true,
           url: true,
-          productId: true,
         },
       },
     },
@@ -52,13 +54,6 @@ export default defineEventHandler(async (event) => {
   // Запрос на получение цветов
   const colorsData = await prisma.color.findMany();
 
-  // Ждём, пока соберутся все
-  const [products, categories, colors] = await Promise.all([
-    productsData,
-    categoriesData,
-    colorsData,
-  ]);
-
   // Установка курсора для постраничной навигации
   cursorId = products[1]?.id;
   // console.log('cursorId: ', cursorId);
@@ -67,7 +62,5 @@ export default defineEventHandler(async (event) => {
   return {
     items: products,
     cursorId,
-    categories,
-    colors,
   };
 });

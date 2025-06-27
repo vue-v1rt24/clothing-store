@@ -22,23 +22,9 @@ export type TypeResponseCategory = {
 };
 
 // ================= Страница админки "Товары"
-export type TypeProduct = {
+export type TypeColor = {
   id: string;
   name: string;
-  color: string;
-  price: number;
-  categoryId: string;
-  createdAt: string;
-  updatedAt: string;
-  category: {
-    id: string;
-    name: string;
-  };
-  image: {
-    id: string;
-    url: string;
-    productId: string;
-  }[];
 };
 
 // Для загруженных изображений товара
@@ -46,6 +32,20 @@ export type TypeUploadImage = {
   id: string;
   url: string;
   productId: string;
+};
+
+export type TypeProduct = {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  categoryId: string;
+  colorId: string;
+  createdAt: string;
+  updatedAt: string;
+  category: TypeCategory;
+  color: TypeColor;
+  image: TypeUploadImage[];
 };
 
 // ================= Страница админки "Пользователи"
