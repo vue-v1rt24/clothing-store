@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type { TypeUploadContentData } from '@/types/admin.types';
+import { useEComFilterStore } from '~/stores/eCommerce/filters';
 import type { TypeProduct } from '~/types/eCommerce/product.types';
+
+//
+const store = useEComFilterStore();
+const { minPrice, maxPrice, categoryChecked } = storeToRefs(store);
 
 //
 const route = useRoute();

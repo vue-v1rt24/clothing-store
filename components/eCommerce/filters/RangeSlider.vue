@@ -1,12 +1,9 @@
 <script setup lang="ts">
-const { min = 20, max = 700 } = defineProps<{
-  min?: number;
-  max?: number;
-}>();
+import { useEComFilterStore } from '~/stores/eCommerce/filters';
 
 //
-const inpMin = ref(min);
-const inpMax = ref(max);
+const store = useEComFilterStore();
+const { minPrice, maxPrice } = storeToRefs(store);
 
 //
 onMounted(() => {
@@ -66,8 +63,8 @@ onMounted(() => {
       }
 
       /*  */
-      inpMin.value = +inpt1.value;
-      inpMax.value = +inpt2.value;
+      minPrice.value = +inpt1.value;
+      maxPrice.value = +inpt2.value;
     };
 
     //
@@ -98,8 +95,8 @@ onMounted(() => {
       }
 
       /*  */
-      inpMin.value = +inpt1.value;
-      inpMax.value = +inpt2.value;
+      minPrice.value = +inpt1.value;
+      maxPrice.value = +inpt2.value;
     };
 
     /*mouse*/
@@ -143,8 +140,8 @@ onMounted(() => {
         inpt2.value = parseInt(min) + Math.round(((max - min) * per_max) / 100);
 
         /*  */
-        inpMin.value = +inpt1.value;
-        inpMax.value = +inpt2.value;
+        minPrice.value = +inpt1.value;
+        maxPrice.value = +inpt2.value;
       };
 
       document.onmouseup = function () {
@@ -193,8 +190,8 @@ onMounted(() => {
         inpt2.value = parseInt(min) + Math.round(((max - min) * per_max) / 100);
 
         /*  */
-        inpMin.value = +inpt1.value;
-        inpMax.value = +inpt2.value;
+        minPrice.value = +inpt1.value;
+        maxPrice.value = +inpt2.value;
       };
 
       document.onmouseup = function () {
@@ -223,10 +220,12 @@ onMounted(() => {
 
 <template>
   <div class="slider_wrap">
+    <h2 class="filter__h2">Цена</h2>
+
     <!-- Поля вывода -->
     <div class="slider__fields">
-      <input id="id66i1" class="range_inpt1" type="number" :min="min" :max="max" />
-      <input id="id66i2" class="range_inpt2" type="number" :min="min" :max="max" />
+      <input id="id66i1" class="range_inpt1" type="number" :min="minPrice" :max="maxPrice" />
+      <input id="id66i2" class="range_inpt2" type="number" :min="minPrice" :max="maxPrice" />
     </div>
 
     <div id="id66" class="range">

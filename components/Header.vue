@@ -1,15 +1,15 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const route = useRoute();
+</script>
 
 <template>
   <header class="header">
     <div class="logo">
-      <NuxtLink to="/" custom v-slot="{ href, navigate, route }">
-        <a v-if="route?.path !== '/'" :href @click="navigate">
-          <ImgLogo />
-        </a>
-
-        <ImgLogo v-else />
+      <NuxtLink v-if="route.path !== '/'" to="/">
+        <ImgLogo />
       </NuxtLink>
+
+      <ImgLogo v-else />
     </div>
 
     <div class="header__right">
