@@ -16,7 +16,7 @@ definePageMeta({
 const route = useRoute();
 
 // Для поиска товара
-const search = ref(route.query.search);
+const search = ref(route.query);
 
 // Получение всех товаров
 const {
@@ -26,7 +26,7 @@ const {
 } = await useFetch('/api/admin/product/select', {
   headers: useHeaders(),
   query: {
-    search,
+    params: search,
   },
 });
 
@@ -141,7 +141,7 @@ const searchHandler = async (val: string) => {
     },
   });
 
-  search.value = val;
+  search.value = { search: val };
 };
 
 // === Кнопка "Показать ещё"
@@ -195,7 +195,7 @@ watch(products, () => {
       url="/api/admin/product/select"
       :headers="useHeaders()"
       :cursor-id="cursorId"
-      :search
+      :params="search"
       @upload-content-handler="uploadContentHandler"
     />
   </div>

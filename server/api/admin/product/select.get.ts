@@ -4,10 +4,13 @@ import prisma from '~/lib/prisma';
 let cursorId: string | undefined;
 
 export default defineEventHandler(async (event) => {
-  const { search, more } = getQuery(event) as {
-    search: string;
+  const { params, more } = getQuery(event) as {
+    params: string;
     more: string;
   };
+
+  // Распарсивание параметра поиска
+  const searchParams = params ? JSON.parse(params) : {};
 
   // Сброс курсора постраничной навигации
   if (!more) {
@@ -21,7 +24,7 @@ export default defineEventHandler(async (event) => {
     cursor: cursorId ? { id: cursorId } : undefined,
     where: {
       name: {
-        contains: search,
+        contains: searchParams.search,
         mode: 'insensitive',
       },
     },

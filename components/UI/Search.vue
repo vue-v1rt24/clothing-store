@@ -4,6 +4,10 @@ const emit = defineEmits<{
 }>();
 
 const search = ref('');
+
+const searchHandler = () => {
+  emit('searchHandler', search.value);
+};
 </script>
 
 <template>
@@ -12,10 +16,10 @@ const search = ref('');
       type="search"
       placeholder="Поиск товара"
       v-model="search"
-      @keydown.enter="emit('searchHandler', search)"
+      @keydown.enter="searchHandler"
     />
 
-    <UIButton title="Поиск" @btn-handler="emit('searchHandler', search)" />
+    <UIButton title="Поиск" @btn-handler="searchHandler" />
   </div>
 </template>
 

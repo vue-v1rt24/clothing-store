@@ -4,10 +4,19 @@ import prisma from '~/lib/prisma';
 let cursorId: string | undefined;
 
 export default defineEventHandler(async (event) => {
-  const { search, more } = getQuery(event) as {
+  const { params, more } = getQuery(event) as { params: string; more: string };
+
+  // Разбор гет-параметров из json строки
+  const { search, prices, categories, colors } = JSON.parse(params) as {
     search: string;
-    more: string;
+    prices: string;
+    categories: string;
+    colors: string;
   };
+
+  const pricesParams = prices ? (JSON.parse(prices) as number[]) : undefined;
+  const categoriesParams = categories ? (JSON.parse(categories) as string[]) : undefined;
+  const colorsParams = colors ? (JSON.parse(colors) as string[]) : undefined;
 
   // Сброс курсора постраничной навигации
   if (!more) {
@@ -24,6 +33,9 @@ export default defineEventHandler(async (event) => {
         contains: search,
         mode: 'insensitive',
       },
+      price: pricesParams?.length ? { gte: pricesParams[0], lte: pricesParams[1] } : undefined,
+      categoryId: categoriesParams?.length ? { in: categoriesParams } : undefined,
+      colorId: colorsParams?.length ? { in: colorsParams } : undefined,
     },
     omit: {
       categoryId: true,
@@ -48,11 +60,13 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  // Запрос на получение категорий
-  const categoriesData = await prisma.category.findMany();
-
-  // Запрос на получение цветов
-  const colorsData = await prisma.color.findMany();
+  // Если товаров нет, то возвращаем ошибку
+  if (!products.length) {
+    throw createError({
+      statusCode: 400,
+      message: 'Товаров нет',
+    });
+  }
 
   // Установка курсора для постраничной навигации
   cursorId = products[1]?.id;

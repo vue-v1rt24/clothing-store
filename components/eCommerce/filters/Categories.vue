@@ -1,15 +1,36 @@
 <script setup lang="ts">
-import { useEComFilterStore } from '~/stores/eCommerce/filters';
 import type { CategoryFilter } from '~/types/eCommerce/filters.types';
+
+//
+const route = useRoute();
 
 //
 defineProps<{
   categories: CategoryFilter[];
 }>();
 
+const emit = defineEmits<{
+  categoriesHandler: [categoryIds: {}];
+}>();
+
 //
-const store = useEComFilterStore();
-const { categoryChecked } = storeToRefs(store);
+const cats: string[] = route.query.categories ? JSON.parse(route.query.categories as string) : [];
+const categoryChecked = ref<string[]>(cats);
+
+// Отправка данных в родительский компонент
+watch(categoryChecked, (val) => {
+  emit('categoriesHandler', { categories: JSON.stringify(val) });
+});
+
+// Сброс фильтра
+watch(
+  () => route.query.categories,
+  (val) => {
+    if (!val) {
+      categoryChecked.value = [];
+    }
+  },
+);
 </script>
 
 <template>
@@ -19,6 +40,7 @@ const { categoryChecked } = storeToRefs(store);
     <div class="categories">
       <label v-for="category in categories" :key="category.id" class="categories__item">
         <input type="checkbox" :value="category.id" v-model="categoryChecked" />
+
         <span>{{ category.name }}</span>
       </label>
     </div>

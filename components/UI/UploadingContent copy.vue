@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T">
-import type { LocationQuery } from 'vue-router';
+import type { LocationQueryValue } from 'vue-router';
 import type { TypeUploadContentData } from '~/types/admin.types';
 
 //
@@ -7,13 +7,13 @@ const {
   url,
   headers,
   title = 'Загрузить ещё',
-  params = undefined,
+  search,
 } = defineProps<{
   url: string; // ссылка запроса для получения данных
   headers?: HeadersInit | undefined;
-  cursorId?: string; // курсор постраничной навигации
+  cursorId: string; // курсор постраничной навигации
   title?: string; // название кнопки
-  params?: LocationQuery; // параметры роутера
+  search?: LocationQueryValue | LocationQueryValue[]; // если есть поиск по элементам (должен быть гет-параметром(query) vue-router)
 }>();
 
 const emit = defineEmits<{
@@ -33,7 +33,7 @@ const moreHandler = async () => {
       headers,
       query: {
         more: 'load',
-        params,
+        search,
       },
     });
 

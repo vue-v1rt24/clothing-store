@@ -1,22 +1,16 @@
 <script setup lang="ts">
 import type { TypeUploadContentData } from '@/types/admin.types';
-import { useEComFilterStore } from '~/stores/eCommerce/filters';
 import type { TypeProduct } from '~/types/eCommerce/product.types';
-
-//
-const store = useEComFilterStore();
-const { minPrice, maxPrice, categoryChecked } = storeToRefs(store);
 
 //
 const route = useRoute();
 
-// Для поиска товара
-const search = ref(route.query.search);
+const params = ref(route.query);
 
 // Получение товаров и постраничной навигации
 const { data: products, error: productError } = await useFetch('/api/eCommerce/product/select', {
   query: {
-    search,
+    params,
   },
 });
 
@@ -24,12 +18,21 @@ const { data: products, error: productError } = await useFetch('/api/eCommerce/p
 const searchHandler = async (val: string) => {
   await navigateTo({
     query: {
+      ...route.query,
       search: val,
     },
   });
 
-  search.value = val;
+  params.value = route.query;
 };
+
+//
+watch(
+  () => route.query,
+  (val) => {
+    params.value = val;
+  },
+);
 
 // === Кнопка "Показать ещё"
 // Курсор постраничной навигации
@@ -71,7 +74,7 @@ watch(products, () => {
     v-if="cursorId"
     url="/api/eCommerce/product/select"
     :cursor-id="cursorId"
-    :search
+    :params
     @upload-content-handler="uploadContentHandler"
   />
 </template>

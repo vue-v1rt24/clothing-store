@@ -1,15 +1,36 @@
 <script setup lang="ts">
-import { useEComFilterStore } from '~/stores/eCommerce/filters';
 import type { ColorFilter } from '~/types/eCommerce/filters.types';
+
+//
+const route = useRoute();
 
 //
 defineProps<{
   colors: ColorFilter[];
 }>();
 
+const emit = defineEmits<{
+  colorsHandler: [colors: {}];
+}>();
+
 //
-const store = useEComFilterStore();
-const { colors: colorsState } = storeToRefs(store);
+const clr: string[] = route.query.colors ? JSON.parse(route.query.colors as string) : [];
+const colorsState = ref<string[]>(clr);
+
+// Отправка данных в родительский компонент
+watch(colorsState, (val) => {
+  emit('colorsHandler', { colors: JSON.stringify(val) });
+});
+
+// Сброс фильтра
+watch(
+  () => route.query.colors,
+  (val) => {
+    if (!val) {
+      colorsState.value = [];
+    }
+  },
+);
 </script>
 
 <template>
@@ -19,7 +40,7 @@ const { colors: colorsState } = storeToRefs(store);
     <div class="colors">
       <label v-for="color in colors" :key="color.id">
         <input type="checkbox" :value="color.id" v-model="colorsState" />
-        <span :class="color.name"></span>
+        <span :style="{ backgroundColor: color.color }"></span>
       </label>
     </div>
   </div>
@@ -50,22 +71,5 @@ const { colors: colorsState } = storeToRefs(store);
       border-color: #559933;
     }
   }
-}
-
-/*  */
-.Белый {
-  background-color: #fff;
-}
-
-.Красный {
-  background-color: #f00;
-}
-
-.Серый {
-  background-color: #808080;
-}
-
-.Чёрный {
-  background-color: #000;
 }
 </style>

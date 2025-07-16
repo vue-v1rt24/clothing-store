@@ -1,9 +1,30 @@
 <script setup lang="ts">
-import { useEComFilterStore } from '~/stores/eCommerce/filters';
+const { minPrice, maxPrice } = defineProps<{
+  minPrice: number;
+  maxPrice: number;
+}>();
 
 //
-const store = useEComFilterStore();
-const { minPrice, maxPrice } = storeToRefs(store);
+const emit = defineEmits<{
+  pricesHandler: [prices: {}];
+}>();
+
+//
+let minVal = ref(minPrice);
+let maxVal = ref(maxPrice);
+
+//
+let scrollTimeout: NodeJS.Timeout;
+
+watch([minVal, maxVal], ([min, max]) => {
+  if (scrollTimeout) {
+    clearTimeout(scrollTimeout);
+  }
+
+  scrollTimeout = setTimeout(async () => {
+    emit('pricesHandler', { prices: JSON.stringify([min, max]) });
+  }, 1000);
+});
 
 //
 onMounted(() => {
@@ -63,8 +84,8 @@ onMounted(() => {
       }
 
       /*  */
-      minPrice.value = +inpt1.value;
-      maxPrice.value = +inpt2.value;
+      minVal.value = +inpt1.value;
+      maxVal.value = +inpt2.value;
     };
 
     //
@@ -95,8 +116,8 @@ onMounted(() => {
       }
 
       /*  */
-      minPrice.value = +inpt1.value;
-      maxPrice.value = +inpt2.value;
+      minVal.value = +inpt1.value;
+      maxVal.value = +inpt2.value;
     };
 
     /*mouse*/
@@ -140,8 +161,8 @@ onMounted(() => {
         inpt2.value = parseInt(min) + Math.round(((max - min) * per_max) / 100);
 
         /*  */
-        minPrice.value = +inpt1.value;
-        maxPrice.value = +inpt2.value;
+        minVal.value = +inpt1.value;
+        maxVal.value = +inpt2.value;
       };
 
       document.onmouseup = function () {
@@ -190,8 +211,8 @@ onMounted(() => {
         inpt2.value = parseInt(min) + Math.round(((max - min) * per_max) / 100);
 
         /*  */
-        minPrice.value = +inpt1.value;
-        maxPrice.value = +inpt2.value;
+        minVal.value = +inpt1.value;
+        maxVal.value = +inpt2.value;
       };
 
       document.onmouseup = function () {
@@ -224,8 +245,8 @@ onMounted(() => {
 
     <!-- Поля вывода -->
     <div class="slider__fields">
-      <input id="id66i1" class="range_inpt1" type="number" :min="minPrice" :max="maxPrice" />
-      <input id="id66i2" class="range_inpt2" type="number" :min="minPrice" :max="maxPrice" />
+      <input id="id66i1" class="range_inpt1" type="number" :min="minVal" :max="maxVal" />
+      <input id="id66i2" class="range_inpt2" type="number" :min="minVal" :max="maxVal" />
     </div>
 
     <div id="id66" class="range">
@@ -282,6 +303,11 @@ onMounted(() => {
   border: none;
   border-radius: 50%;
   background-color: #999;
+
+  /*  */
+  &:active {
+    cursor: grabbing;
+  }
 }
 
 .range__between {

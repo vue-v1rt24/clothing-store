@@ -1,4 +1,5 @@
 export type AllFilters = {
+  priceMinMax: [number, number];
   categories: CategoryFilter[];
   colors: ColorFilter[];
 };
@@ -12,4 +13,5 @@ export type CategoryFilter = {
 export type ColorFilter = {
   id: string;
   name: string;
+  color: string;
 };

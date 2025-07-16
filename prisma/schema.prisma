@@ -27,7 +27,7 @@ model Category {
   product Product[]
 }
 
-//
+// Таблица изображений товара
 model Image {
   id  String @id @default(uuid())
   url String
@@ -39,8 +39,9 @@ model Image {
 
 // Таблица цветов товаров
 model Color {
-  id   String @id @default(uuid())
-  name String @unique
+  id    String @id @default(uuid())
+  name  String @unique
+  color String
 
   // Связь с таблицей Product
   product Product[]

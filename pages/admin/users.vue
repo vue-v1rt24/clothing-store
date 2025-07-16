@@ -11,13 +11,13 @@ definePageMeta({
 const route = useRoute();
 
 // Для поиска товара
-const search = ref(route.query.search);
+const search = ref(route.query);
 
 // Получение всех пользователей
 const { data: users, error: errorSelect } = await useFetch('/api/admin/user/select', {
   headers: useHeaders(),
   query: {
-    search,
+    params: search,
   },
 });
 
@@ -42,7 +42,7 @@ const searchHandler = async (val: string) => {
     },
   });
 
-  search.value = val;
+  search.value = { search: val };
 };
 
 // === Кнопка "Показать ещё"
@@ -86,7 +86,7 @@ watch(users, () => {
       url="/api/admin/user/select"
       :headers="useHeaders()"
       :cursor-id="cursorId"
-      :search
+      :params="search"
       @upload-content-handler="uploadContentHandler"
     />
   </div>

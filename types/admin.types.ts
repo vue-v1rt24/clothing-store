@@ -25,6 +25,7 @@ export type TypeResponseCategory = {
 export type TypeColor = {
   id: string;
   name: string;
+  color: string;
 };
 
 // Для загруженных изображений товара
